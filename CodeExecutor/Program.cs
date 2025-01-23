@@ -1,11 +1,8 @@
-﻿using CoreLib.Base;
-using CoreLib.Utils;
+﻿namespace CodeExecutor;
 
-namespace Launch.CodeExecutor;
-
-internal class Program
+public static class Program
 {
-    internal static void Main(string[] args)
+    public static void Main(string[] args)
     {
         //ObjectJsonConverter.SaveToJsonTest();
 
