@@ -24,7 +24,6 @@
 
   <!-- 👇 -->
   <ItemGroup>
-    <Folder Include="MetaModelTest\SnapshotTest\snapshots\" />
     <Folder Include="MetaModelTest\UtilsTest\" />
   </ItemGroup>
 
