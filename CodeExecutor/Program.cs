@@ -4,10 +4,9 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        //ObjectJsonConverter.SaveToJsonTest();
+#nullable disable warnings
+        string nullableStr = null;
 
-        //ObjectJsonConverter.CsvTest();
-
-        //ObjectJsonConverter.LoadFromJsonTest();
+        Console.WriteLine(nullableStr);
     }
 }

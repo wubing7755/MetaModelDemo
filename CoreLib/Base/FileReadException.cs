@@ -3,13 +3,10 @@
 namespace CoreLib.Base;
 
 [Serializable]
-public class CustomException : Exception
+public class FileReadException : Exception
 {
-    public CustomException() : base() { }
-    
-    public CustomException(string message) : base(message) { }
-    
-    public CustomException(string message, Exception inner) : base(message, inner) { }
-    
-    protected CustomException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    public FileReadException() : base() { }
+    public FileReadException(string message) : base(message) { }
+    public FileReadException(string message, Exception inner) : base(message, inner) { }
+    protected FileReadException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }

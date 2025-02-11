@@ -1,6 +1,13 @@
-﻿namespace CoreLib.Base;
+﻿using System.Runtime.Serialization;
 
-public class ContentValidationException
+namespace CoreLib.Base;
+
+[Serializable]
+
+public class ContentValidationException : Exception
 {
-    
+    public ContentValidationException() : base() { }
+    public ContentValidationException(string message) : base(message) { }
+    public ContentValidationException(string message, Exception inner) : base(message, inner) { }
+    protected ContentValidationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }

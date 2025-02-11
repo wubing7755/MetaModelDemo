@@ -1,0 +1,4 @@
+﻿{
+  Item1: Good Apple,
+  Item2: ParitallyRipe
+}
