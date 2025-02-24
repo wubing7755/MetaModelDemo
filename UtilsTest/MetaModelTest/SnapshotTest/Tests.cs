@@ -10,7 +10,7 @@ public class Tests
     public Task VerifyAppleData()
     {
         // arrange
-        var apple = new Apple("Good Apple", AppleType.ParitallyRipe);
+        var apple = new Apple("Good Apple", AppleType.PartiallyRipe);
         
         // act
         var data = apple.GetApple();

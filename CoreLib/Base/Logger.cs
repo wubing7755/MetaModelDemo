@@ -1,6 +1,8 @@
-﻿namespace CoreLib.Base;
+﻿using System.Collections;
 
-public static class Logger
+namespace CoreLib.Base;
+
+public class Logger : LoggerBase
 {
     private static string[] _info = new string[1000];
 
@@ -11,5 +13,10 @@ public static class Logger
         _info[index] = msg;
 
         index++;
+    }
+
+    public void LogInfo(string info)
+    {
+        _logger.Information("{0}: ", info);
     }
 }
