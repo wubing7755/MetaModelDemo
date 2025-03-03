@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Concurrent;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using Xunit.Abstractions;
@@ -1040,4 +1041,97 @@ public class AsyncModel
 
         Console.WriteLine("任务完成！");
     }
+
+    [Fact]
+    public async void TestDownloadStringAsync()
+    {
+        var url = @"https://example.com";
+        var progress = new Progress<int>(p => Console.WriteLine($"下载进度: {p}%"));
+
+        var result = await DownloadStringAsync(url, progress);
+
+        _testOutputHelper.WriteLine($"Result: ------ {result} ------ ");
+    }
+
+    public async Task<string> DownloadStringAsync(string url, IProgress<int> progress)
+    {
+        using (var client = new HttpClient())
+        {
+            var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            var totalBytes = response.Content.Headers.ContentLength.GetValueOrDefault();
+            var buffer = new byte[8192];
+            var bytesRead = 0;
+            var totalBytesRead = 0L;
+
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            {
+                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    totalBytesRead += bytesRead;
+
+                    // 计算下载进度并更新
+                    int progressPercentage = (int)((totalBytesRead * 100) / totalBytes);
+                    progress?.Report(progressPercentage);
+                }
+            }
+
+            return totalBytesRead.ToString();
+        }
+    }
+
+    // 使用线程安全的缓存容器（例如内存缓存）
+    private static readonly ConcurrentDictionary<string, int> _cache = new ConcurrentDictionary<string, int>();
+
+    /// <summary>
+    /// 尝试从缓存中同步获取数据
+    /// </summary>
+    /// <param name="key">缓存键</param>
+    /// <param name="value">输出参数，缓存的值</param>
+    /// <returns>是否命中缓存</returns>
+    private bool TryGetCachedValue(string key, out int value)
+    {
+        // 检查缓存是否存在该键
+        return _cache.TryGetValue(key, out value);
+    }
+    
+    /// <summary>
+    /// 异步获取数据的实际逻辑（例如访问数据库或远程服务）
+    /// </summary>
+    /// <param name="key">数据键</param>
+    /// <returns>异步任务的结果</returns>
+    private async Task<int> GetValueAsyncInternal(string key)
+    {
+        // 模拟异步操作（如数据库查询、API 调用）
+        await Task.Delay(100); // 模拟网络延迟
+    
+        // 生成或获取真实数据（此处以随机数为例）
+        int realValue = new Random().Next(1, 100);
+    
+        // 将数据写入缓存
+        _cache.TryAdd(key, realValue);
+    
+        return realValue;
+    }
+    
+    public Task<int> GetValueAsync(string key)
+    {
+        if (TryGetCachedValue(key, out int cachedValue))
+        {
+            return Task.FromResult(cachedValue);
+        }
+        else
+        {
+            return GetValueAsyncInternal(key);
+        }
+    }
+
+    [Fact]
+    public void TestGetValueAsync()
+    {
+        var key = "testKey";
+        var result = GetValueAsync(key);
+        Assert.Equal(1, result.Result);
+    }
+    
+    
 }
