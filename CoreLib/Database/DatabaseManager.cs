@@ -35,7 +35,6 @@ public class DatabaseManager
     }
 
     // 创建用户表
-    // 创建用户表
     public static void CreateUserTable()
     {
         using var connection = new SqliteConnection(ConnectionString);
@@ -70,7 +69,6 @@ public class DatabaseManager
         return users;
     }
 
-    // 向用户表中添加信息
     // 向用户表中添加信息
     public static void AddUser(User user)
     {

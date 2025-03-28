@@ -1,0 +1,59 @@
+﻿@inherits ComponentBase
+@implements IDisposable
+
+<CascadingValue Value="this">
+    @foreach (var context in _activeModals)
+    {
+        <DynamicComponent Type="@context.ModalType"
+                          Parameters="@context.Parameters" />
+    }
+</CascadingValue>
+
+@code {
+    [Inject]
+    public IModalService ModalService { get; set; } = null!;
+
+    private readonly List<IModalContext> _activeModals = new();
+    
+    private bool _disposed;
+
+    protected override void OnInitialized()
+    {
+        ModalService.OnModalChanged += HandleModalChanged;
+    }
+
+    private void HandleModalChanged(IModalContext? context)
+    {
+        if (context == null) return;
+
+        if (_activeModals.Contains(context))
+        {
+            _activeModals.Remove(context);
+        }
+        else
+        {
+            // 动态组件参数注入
+            context.Parameters.TryAdd("Context", context);
+            context.Parameters.TryAdd("ModalRef", context);
+            context.Parameters.TryAdd("Container", this);
+            _activeModals.Add(context);
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void RemoveModal(IModalContext context)
+    {
+        _activeModals.Remove(context);
+        ModalService.CloseCurrent();
+    }
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+
+        ModalService.OnModalChanged -= HandleModalChanged;
+        _disposed = true;
+        GC.SuppressFinalize(this);
+    }
+}

@@ -1,0 +1,51 @@
+﻿@namespace SharedLibrary.Components
+
+@inherits ModalBase
+
+<div @ref="ModalRef" class="modal-container" @onclick="OnBackdropClick">
+    <div class="modal-content @GetSizeClass()" @onclick:stopPropagation="true">
+        @if (Context.Options.ShowCloseButton)
+        {
+            <button class="modal-close" @onclick="CloseAsync">&times;</button>
+        }
+        
+        <h3>确认操作</h3>
+        <p>确定要执行此操作吗？</p>
+        
+        <div class="modal-actions">
+            <button class="btn btn-primary" @onclick="Confirm">确定</button>
+            <button class="btn btn-secondary" @onclick="Cancel">取消</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] // 添加级联参数
+    public ModalContainer? Container { get; set; }
+
+    [Parameter]
+    public IModalContext? Context { get; set; }
+
+    private async Task Confirm()
+    {
+        Context!.TaskSource.TrySetResult(ModalResult.Ok(true));
+        await CloseAsync();
+    }
+
+    private async Task Cancel() => await CloseAsync();
+    
+    private string GetSizeClass() => Context.Options.Size switch
+    {
+        ModalSize.Small => "modal-small",
+        ModalSize.Medium => "modal-medium",
+        ModalSize.Large => "modal-large",
+        ModalSize.FullScreen => "modal-fullscreen",
+        _ => "modal-medium"
+    };
+
+    private async Task OnBackdropClick()
+    {
+        if (Context.Options.CloseOnBackdropClick)
+            await CloseAsync();
+    }
+}
