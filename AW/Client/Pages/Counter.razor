@@ -1,45 +1,38 @@
 ﻿@page "/counter"
 
-@inject IModalService ModalService
-
-<PageTitle>Counter</PageTitle>
-
 <h1>Counter</h1>
 
-<p role="status">Current count: @currentCount</p>
+<Divider Style="@Style">
+    <div>------------</div>
+</Divider>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button @onclick="ShowDialog">Open Modal</button>
 
-<Divider />
+<Divider Style="@Style">
+    <div>------------</div>
+</Divider>
 
-<FileForm/>
+<ModalDialog @ref="_dialog" OnClose="ClosDialog">
+    <BodyContent>
+        <div>组件内容</div>
+    </BodyContent>
+</ModalDialog>
 
-<Divider />
-
-<button @onclick="ShowConfirm">打开确认框</button>
-
-<Divider />
 
 @code {
-    private int currentCount = 0;
+    private ModalDialog _dialog = new ModalDialog();
 
-    private void IncrementCount()
+    private const string Style = "display: block; height: 30px; color:green;";
+
+    private void ShowDialog()
     {
-        currentCount++;
+        _dialog.IsVisible = true;
+        StateHasChanged();
     }
 
-    private async Task ShowConfirm()
+    private Task ClosDialog()
     {
-        var options = new ModalOptions.Builder()
-            .WithSize(ModalSize.Medium)
-            .WithAnimations(ModalAnimation.ZoomIn, ModalAnimation.FadeOut)
-            .Build();
-        
-        var result = await ModalService.ShowAsync<CofirmModal>(options);
-
-        if (result.Confirmed && result.GetData<bool>())
-        {
-            // 处理确认逻辑
-        }
+        _dialog.IsVisible = false;
+        return Task.CompletedTask;
     }
 }

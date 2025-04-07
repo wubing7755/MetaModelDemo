@@ -1,50 +1,32 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace SharedLibrary.Components.Divider;
+namespace SharedLibrary.Components;
 
 /// <summary>
 /// 分隔器
 /// </summary>
-public class Divider : ComponentBase
+public sealed class Divider : ComponentBase
 {
-    /// <summary>
-    /// The content of the child.
-    /// </summary>
+    [CascadingParameter]
+    public string? CascadingStyle { get; set; }
+
+    [Parameter]
+    public string? Style { get; set; }
+    
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
-    /// <summary>
-    /// The additional attributes.
-    /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
-
-    /// <summary>
-    /// The outer layer style.
-    /// </summary>
-    public string? OuterLayerStyle { get; set; }
-
-
-    /// <summary>
-    /// Method invoked when the component is ready to start, having received its
-    /// initial parameters from its parent in the render tree.
-    /// </summary>
+    public Dictionary<string, object>? AdditionalAttributes { get; set; } = new();
+    
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        OuterLayerStyle ??= "display: block; height: 30px;";
+        Style ??= CascadingStyle ??= "display: block; height: 30px;";
     }
 
-
-    /// <summary>
-    /// Renders the component to the supplied <see cref="T:Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder">RenderTreeBuilder</see>.
-    /// </summary>
-    /// <param name="builder">
-    /// A <see cref="T:Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder">RenderTreeBuilder</see> 
-    /// that will receive the render output.
-    /// </param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         base.BuildRenderTree(builder);
@@ -52,12 +34,11 @@ public class Divider : ComponentBase
         int sequence = 0;
 
         builder.OpenElement(sequence++, "div");
-        builder.AddAttribute(sequence++, "style", OuterLayerStyle);
-        builder.AddAttribute(sequence++, "@attributes", AdditionalAttributes);
+        builder.AddAttribute(sequence++, "style", Style);
+        builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
         builder.OpenElement(sequence++, "span");
         builder.AddContent(sequence, ChildContent);
-        builder.CloseComponent();
-        builder.CloseComponent();
-
+        builder.CloseElement();
+        builder.CloseElement();
     }
 }

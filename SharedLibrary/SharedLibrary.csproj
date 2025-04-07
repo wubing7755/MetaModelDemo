@@ -17,6 +17,11 @@
 
     <ItemGroup>
         <None Include="wwwroot" />
+        <None Include="wwwroot\css\ModalDialog.css" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\js\" />
     </ItemGroup>
     
 </Project>
