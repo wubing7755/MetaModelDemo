@@ -30,6 +30,10 @@
 <Divider Style="@Style" />
 
 <Select Options="Options" @bind-Value="@SelectedValue">
+    <OptionTemplate>
+        <span>📌</span>
+        <span>@context</span>
+    </OptionTemplate>
 </Select>
 
 <div>
@@ -56,7 +60,7 @@
         "option 5"
     };
 
-    protected override bool ShouldRender() => shouldRender;
+    // protected override bool ShouldRender() => shouldRender;
 
     private void ShowDialog(MouseEventArgs args)
     {

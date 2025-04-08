@@ -15,13 +15,26 @@ public class Select : AWComponentBase
     public string? Value { get; set; }
 
     [Parameter]
-    public Func<string, string>? ValueChanged { get; set; }
+    public EventCallback<string>? ValueChanged { get; set; }
 
     [Parameter]
     public string? Placeholder { get; set; } = "Please choose an option";
 
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter]
+    public RenderFragment<string>? OptionTemplate { get; set; }
+
+    private void OnValueChanged(ChangeEventArgs args)
+    {
+        var value = args.Value?.ToString();
+        Value = value;
+        if(ValueChanged.HasValue)
+        {
+            ValueChanged.Value.InvokeAsync(value);
+        }
+    }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
@@ -37,18 +50,12 @@ public class Select : AWComponentBase
         builder.AddAttribute(seq++, "style", Style);
         builder.AddAttribute(seq++, "disabled", Disabled);
 
-        builder.AddAttribute(seq++, "onchange", EventCallback.Factory.Create<ChangeEventArgs>(this, arg =>
-        {
-            var value = arg.Value?.ToString();
-            if (value is not null)
-            {
-                Value = value;
-                ValueChanged?.Invoke(value);
-            }
-        }));
+        builder.AddAttribute(seq++, "value", Value);
+        builder.AddAttribute(seq++, "onchange", OnValueChanged);
 
         builder.OpenElement(seq++, "option");
         builder.AddAttribute(seq++, "value", "");
+        builder.AddAttribute(seq++, "selected", string.IsNullOrEmpty(Value));
         builder.AddContent(seq++, Placeholder);
         builder.CloseElement();
 
@@ -58,7 +65,17 @@ public class Select : AWComponentBase
             {
                 builder.OpenElement(seq++, "option");
                 builder.AddAttribute(seq++, "value", option);
-                builder.AddContent(seq++, option);
+                builder.AddAttribute(seq++, "selected", option == Value);
+
+                if(OptionTemplate is not null)
+                {
+                    builder.AddContent(seq++, OptionTemplate(option));
+                }
+                else
+                {
+                    builder.AddContent(seq++, option);
+                }
+  
                 builder.CloseElement();
             }
         }
