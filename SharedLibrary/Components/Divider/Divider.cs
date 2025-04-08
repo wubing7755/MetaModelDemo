@@ -6,13 +6,10 @@ namespace SharedLibrary.Components;
 /// <summary>
 /// 分隔器
 /// </summary>
-public sealed class Divider : ComponentBase
+public sealed class Divider : AWComponentBase
 {
     [CascadingParameter]
     public string? CascadingStyle { get; set; }
-
-    [Parameter]
-    public string? Style { get; set; }
     
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -31,14 +28,38 @@ public sealed class Divider : ComponentBase
     {
         base.BuildRenderTree(builder);
 
-        int sequence = 0;
+        int seq = 0;
 
-        builder.OpenElement(sequence++, "div");
-        builder.AddAttribute(sequence++, "style", Style);
-        builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
-        builder.OpenElement(sequence++, "span");
-        builder.AddContent(sequence, ChildContent);
+        builder.OpenElement(seq++, "div");
+        builder.AddAttribute(seq++, "style", Style);
+        builder.AddMultipleAttributes(seq++, AdditionalAttributes);
+
+        // SVG Dotted
+        builder.OpenElement(seq++, "svg");
+        builder.AddAttribute(seq++, "style", 
+            "width: 100%;" +
+            "height: 30%;" +
+            "aria-hidden: true;");
+        builder.OpenElement(seq++, "line");
+        builder.AddAttribute(seq++, "x1", "0%");
+        builder.AddAttribute(seq++, "y1", "50%");
+        builder.AddAttribute(seq++, "x2", "100%");
+        builder.AddAttribute(seq++, "y2", "50%");
+        builder.AddAttribute(seq++, "stroke", "green");
+        builder.AddAttribute(seq++, "stroke-width", "1");
+        builder.AddAttribute(seq++, "stroke-dasharray", "5 3");
         builder.CloseElement();
+        builder.CloseElement();
+
+        if(ChildContent != null)
+        {
+            builder.AddMarkupContent(seq++, "<div style=\"text-align:center;margin-top:-15px;\">");
+            builder.OpenElement(seq++, "span");
+            builder.AddContent(seq, ChildContent);
+            builder.CloseElement();
+            builder.AddMarkupContent(seq++, "</div>");
+        }
+
         builder.CloseElement();
     }
 }

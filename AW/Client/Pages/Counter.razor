@@ -2,15 +2,11 @@
 
 <h1>Counter</h1>
 
-<Divider Style="@Style">
-    <div>------------</div>
-</Divider>
+<Divider Style="@Style"/>
 
-<button @onclick="ShowDialog">Open Modal</button>
+<Button OnClick="ShowDialog">Open Modal</Button>
 
-<Divider Style="@Style">
-    <div>------------</div>
-</Divider>
+<Divider Style="@Style"/>
 
 <ModalDialog @ref="_dialog" OnClose="ClosDialog">
     <BodyContent>
@@ -18,21 +14,59 @@
     </BodyContent>
 </ModalDialog>
 
+<Divider Style="@Style" />
+
+<label>
+    <input type="checkbox" @bind="shouldRender" />
+    Should Render?
+</label>
+
+<Divider Style="@Style" />
+
+<Button Disabled=true>Enabled</Button>
+
+<Button Disabled=false>Disabled</Button>
+
+<Divider Style="@Style" />
+
+<Select Options="Options" @bind-Value="@SelectedValue">
+</Select>
+
+<div>
+    选中项： @SelectedValue
+</div>
+
+<Divider Style="@Style" />
 
 @code {
     private ModalDialog _dialog = new ModalDialog();
 
     private const string Style = "display: block; height: 30px; color:green;";
 
-    private void ShowDialog()
+    private bool shouldRender = true;
+
+    public string SelectedValue { get; set; } = string.Empty;
+
+    private HashSet<string> Options = new HashSet<string>()
     {
-        _dialog.IsVisible = true;
-        StateHasChanged();
+        "option 1",
+        "option 2",
+        "option 3",
+        "option 4",
+        "option 5"
+    };
+
+    protected override bool ShouldRender() => shouldRender;
+
+    private void ShowDialog(MouseEventArgs args)
+    {
+        _dialog.SetVisible(true);
     }
 
     private Task ClosDialog()
     {
-        _dialog.IsVisible = false;
+        _dialog.SetVisible(false);
+
         return Task.CompletedTask;
     }
 }

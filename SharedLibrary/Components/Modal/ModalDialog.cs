@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace SharedLibrary.Components;
 
-public class ModalDialog : ComponentBase, IDisposable
+public class ModalDialog : AWComponentBase
 {
     [Parameter]
     public RenderFragment? HeaderTemplate { get; set; }
@@ -15,9 +15,6 @@ public class ModalDialog : ComponentBase, IDisposable
     
     [Parameter]
     public RenderFragment? BodyContent { get; set; }
-    
-    [Parameter]
-    public string? CssClass { get; set; }
     
     [Parameter]
     public bool ShowConfirmButton { get; set; } = true;
@@ -34,8 +31,7 @@ public class ModalDialog : ComponentBase, IDisposable
     [Parameter, NotNull, EditorRequired]
     public Func<Task>? OnClose { get; set; }
     
-    [Parameter]
-    public bool IsVisible { get; set; } = false;
+    private bool IsVisible { get; set; } = false;
     
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
@@ -124,6 +120,12 @@ public class ModalDialog : ComponentBase, IDisposable
         builder.CloseElement();
     }
 
+    public void SetVisible(bool isVisible)
+    {
+        IsVisible = isVisible;
+        StateHasChanged();
+    }
+
     private async Task OnCloseClick(MouseEventArgs args)
     {
         if (ShowCloseButton)
@@ -140,10 +142,5 @@ public class ModalDialog : ComponentBase, IDisposable
                 await OnClose();
                 break;
         }
-    }
-   
-    public void Dispose()
-    {
-        Console.WriteLine("Modal component disposed");
     }
 }
