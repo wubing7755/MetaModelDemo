@@ -24,16 +24,13 @@ public class ModalDialog : AWComponentBase
     
     [Parameter]
     public bool ShowCloseButton { get; set; } = true;
-    
-    [Parameter(CaptureUnmatchedValues = true)]
-    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     [Parameter, NotNull, EditorRequired]
     public Func<Task>? OnClose { get; set; }
     
     private bool IsVisible { get; set; } = false;
     
-    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    protected override void BuildComponent(RenderTreeBuilder builder)
     {
         if(!IsVisible) return;
         

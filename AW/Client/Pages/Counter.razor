@@ -23,9 +23,9 @@
 
 <Divider Style="@Style" />
 
-<Button Disabled=true>Enabled</Button>
+<Button Disabled=true>Disabled</Button>
 
-<Button Disabled=false>Disabled</Button>
+<Button Disabled=false OnClick="(arg) => {}">Enabled</Button>
 
 <Divider Style="@Style" />
 
@@ -41,6 +41,14 @@
 </div>
 
 <Divider Style="@Style" />
+
+
+<Input></Input>
+
+
+<Divider Style="@Style" />
+
+<Label Text="说明"></Label>
 
 @code {
     private ModalDialog _dialog = new ModalDialog();

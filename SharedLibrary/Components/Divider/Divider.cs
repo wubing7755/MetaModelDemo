@@ -13,9 +13,6 @@ public sealed class Divider : AWComponentBase
     
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? AdditionalAttributes { get; set; } = new();
     
     protected override void OnInitialized()
     {
@@ -24,15 +21,17 @@ public sealed class Divider : AWComponentBase
         Style ??= CascadingStyle ??= "display: block; height: 30px;";
     }
 
-    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    protected override void BuildComponent(RenderTreeBuilder builder)
     {
-        base.BuildRenderTree(builder);
-
         int seq = 0;
 
         builder.OpenElement(seq++, "div");
         builder.AddAttribute(seq++, "style", Style);
-        builder.AddMultipleAttributes(seq++, AdditionalAttributes);
+
+        if (AdditionalAttributes is not null)
+        {
+            builder.AddMultipleAttributes(seq++, AdditionalAttributes);
+        }
 
         // SVG Dotted
         builder.OpenElement(seq++, "svg");

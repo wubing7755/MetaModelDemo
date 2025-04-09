@@ -20,9 +20,6 @@ public class Select : AWComponentBase
     [Parameter]
     public string? Placeholder { get; set; } = "Please choose an option";
 
-    [Parameter(CaptureUnmatchedValues = true)]
-    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
-
     [Parameter]
     public RenderFragment<string>? OptionTemplate { get; set; }
 
@@ -36,16 +33,19 @@ public class Select : AWComponentBase
         }
     }
 
-    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    protected override void BuildComponent(RenderTreeBuilder builder)
     {
-        base.BuildRenderTree(builder);
-
         int seq = 0;
 
         builder.OpenElement(seq++, "div");
 
         builder.OpenElement(seq++, "select");
-        builder.AddMultipleAttributes(seq++, AdditionalAttributes);
+
+        if (AdditionalAttributes is not null)
+        {
+            builder.AddMultipleAttributes(seq++, AdditionalAttributes);
+        }
+
         builder.AddAttribute(seq++, "class", CssClass);
         builder.AddAttribute(seq++, "style", Style);
         builder.AddAttribute(seq++, "disabled", Disabled);

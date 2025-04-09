@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -13,6 +13,9 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.36" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.36" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.36" />
+        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.4" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,6 +25,21 @@
 
     <ItemGroup>
       <Folder Include="wwwroot\js\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\SecureCom.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>SecureCom.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\SecureCom.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>SecureCom.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
     
 </Project>
